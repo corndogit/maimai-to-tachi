@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "maimai-to-tachi"
+version = "0.1.0"
+description = "A script for exporting scores from the maimai Finale score spreadsheet"
+authors = ["corndogit <admin@corndogit.dev>"]
+license = "Unlicense"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+gspread = "^6.1.4"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
