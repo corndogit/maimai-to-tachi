@@ -29,10 +29,10 @@ def _write_to_file(request_body: dict[str, Any], filename: str = "output.json") 
     json.dump(request_body, file)
 
 
-def save_local_copy(scores: list) -> None:
+def save_local_copy(request_body: dict[str, Any]) -> None:
   try:
     filename = f"maimai-scores-{int(datetime.now().timestamp())}.json"
-    _write_to_file(scores, filename = filename)
+    _write_to_file(request_body, filename)
     logger.info(f"Saved to JSON file at {config.output_dir}")
   except Exception as e:
     logger.error(f"Could not save file: {e}")
@@ -40,7 +40,10 @@ def save_local_copy(scores: list) -> None:
 
 
 def submit_scores(request_body: dict[str, Any]) -> None:
-  headers = {"Authorization": "Bearer " + config.tachi_api_key}
+  headers = {
+    "Authorization": f"Bearer {config.tachi_api_key}",
+    "X-User-Intent": "ir/direct-manual"
+  }
   try: 
     response = requests.post(TACHI_IMPORT_ENDPOINT, json=request_body, headers=headers, timeout=15)
     response.raise_for_status()
