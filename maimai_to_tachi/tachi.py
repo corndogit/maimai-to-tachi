@@ -65,4 +65,5 @@ def submit_scores(request_body: dict[str, Any]) -> None:
 def add_scores_to_request_body(scores: list[Any]) -> dict[str, Any]:
     request_body = TACHI_IMPORT_REQUEST_BODY
     request_body["scores"] = scores
+    request_body["classes"] = {"dan": "DAN_6"}  # todo: get highest dan from scoresheet
     return request_body
