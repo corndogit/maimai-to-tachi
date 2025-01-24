@@ -8,6 +8,7 @@ from requests.exceptions import (ConnectionError, HTTPError, RequestException,
                                  Timeout)
 
 from maimai_to_tachi import config, logging_config
+from maimai_to_tachi.score import ScoreDataclassEncoder
 
 logger = logging_config.get_logger(__name__)
 
@@ -25,7 +26,7 @@ def _write_to_file(
     if not config.output_dir.exists():
         config.output_dir.mkdir(parents=True, exist_ok=True)
     with open(config.output_dir / filename, "w") as file:
-        json.dump(request_body, file)
+        json.dump(request_body, file, cls=ScoreDataclassEncoder)
 
 
 def save_local_copy(request_body: dict[str, Any]) -> None:
@@ -44,9 +45,11 @@ def submit_scores(request_body: dict[str, Any]) -> None:
         "X-User-Intent": "ir/direct-manual",
     }
     try:
+        score_payload = json.loads(json.dumps(
+            request_body, cls=ScoreDataclassEncoder))  # this sucks
         response = requests.post(
             TACHI_IMPORT_ENDPOINT,
-            json=request_body,
+            json=score_payload,
             headers=headers,
             timeout=15
         )
