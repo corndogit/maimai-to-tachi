@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "maimai-to-tachi"
-version = "0.1.0"
+version = "0.1.1"
 description = "A script for exporting scores from the maimai Finale score spreadsheet"
 authors = ["corndogit <admin@corndogit.dev>"]
 license = "Unlicense"
