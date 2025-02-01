@@ -8,7 +8,7 @@ from requests.exceptions import (ConnectionError, HTTPError, RequestException,
                                  Timeout)
 
 from maimai_to_tachi import config, logging_config
-from maimai_to_tachi.score import ScoreDataclassEncoder
+from maimai_to_tachi.dataclasses.score import ScoreDataclassEncoder
 
 logger = logging_config.get_logger(__name__)
 

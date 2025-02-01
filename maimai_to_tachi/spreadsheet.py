@@ -7,7 +7,7 @@ from gspread.spreadsheet import Spreadsheet
 
 from maimai_to_tachi import config, logging_config
 from maimai_to_tachi.difficulty import difficulties
-from maimai_to_tachi.score import Score
+from maimai_to_tachi.dataclasses.score import Score
 
 logger = logging_config.get_logger(__name__)
 
