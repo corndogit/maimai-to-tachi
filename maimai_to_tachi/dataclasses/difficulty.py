@@ -1,6 +1,11 @@
-from collections import namedtuple
+from dataclasses import dataclass
 
-Difficulty = namedtuple('Difficulty', ('name', 'last_row'))
+
+@dataclass
+class Difficulty:
+    name: str
+    last_row: int
+
 
 difficulties = [
     Difficulty('Basic', 634),
