@@ -17,6 +17,9 @@ class DanRank:
     display_name: str
     cell_value: str
 
+    def __repr__(self) -> str:
+        return self.display_name
+
 
 dan_ranks = [
     DanRank("1_DAN",      "1st Dan",      "C2"),
