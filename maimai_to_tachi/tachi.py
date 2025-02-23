@@ -9,6 +9,7 @@ from requests.exceptions import (ConnectionError, HTTPError, RequestException,
                                  Timeout)
 
 from maimai_to_tachi import logging_config
+from maimai_to_tachi.dataclasses.dan_rank import DanRank
 from maimai_to_tachi.dataclasses.score import ScoreDataclassEncoder
 
 logger = logging_config.get_logger(__name__)
@@ -67,8 +68,12 @@ def submit_scores(request_body: dict[str, Any], tachi_api_key: str) -> None:
         logger.error(f"An error occurred: {req_err}")
 
 
-def add_scores_to_request_body(scores: list[Any]) -> dict[str, Any]:
+def add_scores_to_request_body(
+        scores: list[Any],
+        dan_rank: DanRank | None = None
+) -> dict[str, Any]:
     request_body = TACHI_IMPORT_REQUEST_BODY
     request_body["scores"] = scores
-    request_body["classes"] = {"dan": "DAN_6"}  # todo: get highest dan from scoresheet
+    if dan_rank is not None:
+        request_body["classes"] = {"dan": dan_rank.name}
     return request_body
