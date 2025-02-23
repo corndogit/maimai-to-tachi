@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 from typing import Iterable, Any
 from dacite import from_dict
 
@@ -52,10 +53,13 @@ def _map_and_append_scores(
         logger.warning(f"{len(ignored_codes)} score(s) skipped due to parsing errors")
 
 
-def get_scores_from_maimai_spreadsheet() -> list[Score]:
-    gc = gspread.service_account(config.service_account_creds_path)
-    logger.info(f"Opening {config.sheet_title} from Google Sheets")
-    sh = gc.open(config.sheet_title)
+def get_scores_from_maimai_spreadsheet(
+        sheet_title: str,
+        service_account_creds_path: Path
+) -> list[Score]:
+    gc = gspread.service_account(service_account_creds_path)
+    logger.info(f"Opening {sheet_title} from Google Sheets")
+    sh = gc.open(sheet_title)
     scores = _read_scores_from_sheet(sh)
     logger.info(f"Adding {len(scores)} scores to request payload")
     return scores

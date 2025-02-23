@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 import sys
 from datetime import datetime
 from typing import Any
@@ -8,11 +9,9 @@ from requests.exceptions import (ConnectionError, HTTPError, RequestException,
                                  Timeout)
 
 from maimai_to_tachi import logging_config
-from maimai_to_tachi.config import ScriptConfig
 from maimai_to_tachi.dataclasses.score import ScoreDataclassEncoder
 
 logger = logging_config.get_logger(__name__)
-config = ScriptConfig.create()
 
 TACHI_IMPORT_ENDPOINT = "https://kamai.tachi.ac/ir/direct-manual/import"
 TACHI_IMPORT_REQUEST_BODY = {
@@ -22,28 +21,29 @@ TACHI_IMPORT_REQUEST_BODY = {
 
 
 def _write_to_file(
+        output_dir: Path,
         request_body: dict[str, Any],
-        filename: str = "output.json"
+        filename: str = "output.json",
 ) -> None:
-    if not config.output_dir.exists():
-        config.output_dir.mkdir(parents=True, exist_ok=True)
-    with open(config.output_dir / filename, "w") as file:
+    if not output_dir.exists():
+        output_dir.mkdir(parents=True, exist_ok=True)
+    with open(output_dir / filename, "w") as file:
         json.dump(request_body, file, cls=ScoreDataclassEncoder)
 
 
-def save_local_copy(request_body: dict[str, Any]) -> None:
+def save_local_copy(output_dir: Path, request_body: dict[str, Any]) -> None:
     try:
         filename = f"maimai-scores-{int(datetime.now().timestamp())}.json"
-        _write_to_file(request_body, filename)
-        logger.info(f"Saved to JSON file at {config.output_dir}")
+        _write_to_file(output_dir, request_body, filename)
+        logger.info(f"Saved to JSON file at {output_dir}")
     except Exception as e:
         logger.error(f"Could not save file: {e}")
         sys.exit(1)
 
 
-def submit_scores(request_body: dict[str, Any]) -> None:
+def submit_scores(request_body: dict[str, Any], tachi_api_key: str) -> None:
     headers = {
-        "Authorization": f"Bearer {config.tachi_api_key}",
+        "Authorization": f"Bearer {tachi_api_key}",
         "X-User-Intent": "ir/direct-manual",
     }
     try:
