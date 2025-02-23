@@ -7,10 +7,12 @@ import requests
 from requests.exceptions import (ConnectionError, HTTPError, RequestException,
                                  Timeout)
 
-from maimai_to_tachi import config, logging_config
+from maimai_to_tachi import logging_config
+from maimai_to_tachi.config import ScriptConfig
 from maimai_to_tachi.dataclasses.score import ScoreDataclassEncoder
 
 logger = logging_config.get_logger(__name__)
+config = ScriptConfig.create()
 
 TACHI_IMPORT_ENDPOINT = "https://kamai.tachi.ac/ir/direct-manual/import"
 TACHI_IMPORT_REQUEST_BODY = {
