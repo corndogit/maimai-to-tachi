@@ -22,11 +22,7 @@ def get_spreadsheet(sheet_title: str, service_account_creds_path: Path) -> Sprea
     return gc.open(sheet_title)
 
 
-def get_scores_from_maimai_spreadsheet(
-        sheet_title: str,
-        service_account_creds_path: Path
-) -> list[Score]:
-    sheet = get_spreadsheet(sheet_title, service_account_creds_path)
+def get_scores_from_maimai_spreadsheet(sheet: Spreadsheet) -> list[Score]:
     scores = []
     for diff in difficulties:
         tachi_codes = list(sheet.worksheet(
@@ -36,16 +32,13 @@ def get_scores_from_maimai_spreadsheet(
     return scores
 
 
-def get_dan_ranks_from_maimai_spreadsheet(
-        sheet_title: str,
-        service_account_creds_path: Path
-) -> list[DanRank]:
-    sheet = get_spreadsheet(sheet_title, service_account_creds_path)
+def get_dan_ranks_from_maimai_spreadsheet(sheet: Spreadsheet) -> list[DanRank]:
     ranks = []
     for rank in dan_ranks:
         rank_cell_value = sheet.worksheet("Course").get(rank.cell_value).first()
         if rank_cell_value != DanRankStatus.UNPLAYED:
             ranks.append(rank)
+    logger.info(f"Found {len(ranks)} played dan ranks")
     return ranks
 
 

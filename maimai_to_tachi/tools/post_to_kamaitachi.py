@@ -8,10 +8,10 @@ from maimai_to_tachi.config import ScriptConfig
 
 if __name__ == "__main__":
     config = ScriptConfig.create()
-    scores_from_sheet = spreadsheet.get_scores_from_maimai_spreadsheet(
+    sheet = spreadsheet.get_spreadsheet(
         config.sheet_title,
-        config.service_account_creds_path
-    )
+        config.service_account_creds_path)
+    scores_from_sheet = spreadsheet.get_scores_from_maimai_spreadsheet(sheet)
     scores_request = tachi.add_scores_to_request_body(scores_from_sheet)
 
     tachi.save_local_copy(config.output_dir, scores_request)
