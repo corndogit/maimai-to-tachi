@@ -11,8 +11,9 @@ if __name__ == "__main__":
     sheet = spreadsheet.get_spreadsheet(
         config.sheet_title,
         config.service_account_creds_path)
-    scores_from_sheet = spreadsheet.get_scores_from_maimai_spreadsheet(sheet)
-    scores_request = tachi.add_scores_to_request_body(scores_from_sheet)
+    scores = spreadsheet.get_scores_from_maimai_spreadsheet(sheet)
+    dan_rank = spreadsheet.get_highest_dan_rank_from_maimai_spreadsheet(sheet)
+    scores_request = tachi.add_scores_to_request_body(scores, dan_rank)
 
     tachi.save_local_copy(config.output_dir, scores_request)
     tachi.submit_scores(config.tachi_api_key, scores_request)

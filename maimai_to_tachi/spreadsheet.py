@@ -32,14 +32,17 @@ def get_scores_from_maimai_spreadsheet(sheet: Spreadsheet) -> list[Score]:
     return scores
 
 
-def get_dan_ranks_from_maimai_spreadsheet(sheet: Spreadsheet) -> list[DanRank]:
+def get_highest_dan_rank_from_maimai_spreadsheet(sheet: Spreadsheet) -> DanRank:
     ranks = []
     for rank in dan_ranks:
         rank_cell_value = sheet.worksheet("Course").get(rank.cell_value).first()
-        if rank_cell_value != DanRankStatus.UNPLAYED:
+        if rank_cell_value == DanRankStatus.CLEARED:
             ranks.append(rank)
-    logger.info(f"Found {len(ranks)} played dan ranks")
-    return ranks
+    log_message = f"Found {len(ranks)} cleared dan ranks"
+    if len(ranks) > 0:
+        log_message += f"- highest achieved is {ranks[-1]}"
+    logger.info(log_message)
+    return ranks[-1] if len(ranks) > 0 else None
 
 
 def _parse_tachi_code(code: Iterable) -> Any:
