@@ -33,11 +33,14 @@ def get_scores_from_maimai_spreadsheet(sheet: Spreadsheet) -> list[Score]:
 
 
 def get_highest_dan_rank_from_maimai_spreadsheet(sheet: Spreadsheet) -> DanRank:
-    ranks = []
-    for rank in dan_ranks:
-        rank_cell_value = sheet.worksheet("Course").get(rank.cell_value).first()
-        if rank_cell_value == DanRankStatus.CLEARED:
-            ranks.append(rank)
+    rank_cell_value_ranges = sheet.worksheet("Course").batch_get(
+        [dan_rank.cell_value for dan_rank in dan_ranks]
+    )
+    results = list(zip(dan_ranks, rank_cell_value_ranges))
+    ranks = list(filter(
+        lambda dr: dr[1].first() == DanRankStatus.CLEARED,
+        results
+    ))
     log_message = f"Found {len(ranks)} cleared dan ranks"
     if len(ranks) > 0:
         log_message += f"- highest achieved is {ranks[-1]}"
