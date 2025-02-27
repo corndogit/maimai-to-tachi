@@ -42,7 +42,7 @@ def save_local_copy(output_dir: Path, request_body: dict[str, Any]) -> None:
         sys.exit(1)
 
 
-def submit_scores(request_body: dict[str, Any], tachi_api_key: str) -> None:
+def submit_scores(tachi_api_key: str, request_body: dict[str, Any]) -> None:
     headers = {
         "Authorization": f"Bearer {tachi_api_key}",
         "X-User-Intent": "ir/direct-manual",
