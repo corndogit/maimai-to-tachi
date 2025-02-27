@@ -27,5 +27,5 @@ class Score:
 class ScoreDataclassEncoder(json.JSONEncoder):
     def default(self, o: Any) -> Any:
         if dataclasses.is_dataclass(o):
-            return dataclasses.asdict(o)
+            return dataclasses.asdict(o)  # type: ignore
         return super().default(o)

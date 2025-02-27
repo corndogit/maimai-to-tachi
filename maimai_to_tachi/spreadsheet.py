@@ -5,6 +5,7 @@ from dacite import from_dict
 
 import gspread
 from gspread.spreadsheet import Spreadsheet
+from gspread.worksheet import ValueRange
 
 from maimai_to_tachi import logging_config
 from maimai_to_tachi.config import ScriptConfig
@@ -23,7 +24,7 @@ def get_spreadsheet(sheet_title: str, service_account_creds_path: Path) -> Sprea
 
 
 def get_scores_from_maimai_spreadsheet(sheet: Spreadsheet) -> list[Score]:
-    scores = []
+    scores: list[Score] = []
     for diff in difficulties:
         logger.debug(f"Finding {diff.name} scores...")
         tachi_codes = list(sheet.worksheet(
@@ -33,7 +34,9 @@ def get_scores_from_maimai_spreadsheet(sheet: Spreadsheet) -> list[Score]:
     return scores
 
 
-def get_highest_dan_rank_from_maimai_spreadsheet(sheet: Spreadsheet) -> DanRank:
+def get_highest_dan_rank_from_maimai_spreadsheet(
+    sheet: Spreadsheet
+) -> tuple[DanRank, ValueRange] | None:
     rank_cell_value_ranges = sheet.worksheet("Course").batch_get(
         [dan_rank.cell_value for dan_rank in dan_ranks]
     )
@@ -44,14 +47,15 @@ def get_highest_dan_rank_from_maimai_spreadsheet(sheet: Spreadsheet) -> DanRank:
     ))
     log_message = f"Found {len(ranks)} cleared dan ranks"
     if len(ranks) > 0:
-        log_message += f"- highest achieved is {ranks[-1]}"
+        highest_rank = ranks[0][0]
+        log_message += f"- highest achieved is {highest_rank.display_name}"
     logger.info(log_message)
-    return ranks[-1] if len(ranks) > 0 else None
+    return highest_rank if len(ranks) > 0 else None
 
 
 def _parse_tachi_code(code: Iterable) -> Any:
     try:
-        return json.loads(code)
+        return json.loads(str(code))
     except json.JSONDecodeError:
         raise ValueError(f"Failed to parse the following Tachi code: {code}")
 
@@ -64,7 +68,7 @@ def _map_and_append_scores(
     appended_count = 0
     for t in tachi_codes:
         if t is not None and t != []:
-            code = t[0].rstrip(',')
+            code = list(t)[0].rstrip(',')
             try:
                 tachi_code_object = _parse_tachi_code(code)
             except ValueError:

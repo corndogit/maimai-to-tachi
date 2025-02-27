@@ -56,11 +56,11 @@ class ScriptConfig:
                 raise FileNotFoundError(no_config_warning)
 
     def _generate_config_template(self) -> None:
-        self.config_dir.mkdir(parents=True, exist_ok=True)
+        DEFAULT_CONFIG_DIR.mkdir(parents=True, exist_ok=True)
         with open(self.config_path, 'w') as file:
             file.write(CONFIG_TEMPLATE)
             logger.info("Created a new config file at %s" % self.config_path)
-        webbrowser.open(self.config_path)
+        webbrowser.open(self.config_path.as_posix())
 
     def _service_account_creds_exists(self) -> None:
         if not self.service_account_creds_path.exists():
