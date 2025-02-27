@@ -25,6 +25,7 @@ def get_spreadsheet(sheet_title: str, service_account_creds_path: Path) -> Sprea
 def get_scores_from_maimai_spreadsheet(sheet: Spreadsheet) -> list[Score]:
     scores = []
     for diff in difficulties:
+        logger.debug(f"Finding {diff.name} scores...")
         tachi_codes = list(sheet.worksheet(
             diff.name).get(f"U2:U{diff.last_row}"))
         _map_and_append_scores(scores, tachi_codes)
@@ -58,8 +59,9 @@ def _parse_tachi_code(code: Iterable) -> Any:
 def _map_and_append_scores(
         scores: list[Score],
         tachi_codes: list[Iterable]
-) -> list[Score]:
+) -> None:
     ignored_codes = []
+    appended_count = 0
     for t in tachi_codes:
         if t is not None and t != []:
             code = t[0].rstrip(',')
@@ -73,5 +75,7 @@ def _map_and_append_scores(
             if score.judgements.miss > 0:
                 score.lamp = "CLEAR"
             scores.append(score)
+            appended_count += 1
+    logger.debug(f"{appended_count} score(s) appended to request body")
     if len(ignored_codes) > 0:
         logger.warning(f"{len(ignored_codes)} score(s) skipped due to parsing errors")
