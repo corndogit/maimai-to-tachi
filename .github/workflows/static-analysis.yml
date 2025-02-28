@@ -1,4 +1,5 @@
-name: Poetry Install and Lint
+# Poetry Install, Lint and Typechecking
+name: static-analysis
 on: push
 
 jobs:
@@ -6,9 +7,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.13"]
-        poetry-version: ["latest", "main"]
-        os: [ubuntu-22.04, macos-latest, windows-latest]
+        python-version: ["3.11", "3.12", "3.13"]
+        poetry-version: ["main"]
+        os: [ubuntu-22.04, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -32,3 +33,8 @@ jobs:
         run: poetry install --with dev
       - name: Lint with flake8
         run: poetry run flake8 ./maimai_to_tachi
+      - name: 'Type-checking package with "mypy:"...'
+        run: |
+          python -m pip --quiet install -r requirements.txt
+          mypy --version
+          mypy ./maimai_to_tachi/

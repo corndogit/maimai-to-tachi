@@ -5,7 +5,6 @@ from dacite import from_dict
 
 import gspread
 from gspread.spreadsheet import Spreadsheet
-from gspread.worksheet import ValueRange
 
 from maimai_to_tachi import logging_config
 from maimai_to_tachi.config import ScriptConfig
@@ -36,7 +35,7 @@ def get_scores_from_maimai_spreadsheet(sheet: Spreadsheet) -> list[Score]:
 
 def get_highest_dan_rank_from_maimai_spreadsheet(
     sheet: Spreadsheet
-) -> tuple[DanRank, ValueRange] | None:
+) -> DanRank | None:
     rank_cell_value_ranges = sheet.worksheet("Course").batch_get(
         [dan_rank.cell_value for dan_rank in dan_ranks]
     )
