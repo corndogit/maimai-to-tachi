@@ -79,3 +79,7 @@ class ScriptConfig:
         except Exception as e:
             e.add_note("Failed to read and set config: %s" % e)
             raise e
+
+
+if __name__ == '__main__':
+    ScriptConfig.create()
