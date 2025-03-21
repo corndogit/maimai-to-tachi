@@ -34,7 +34,7 @@ def main() -> None:
             "song": str(row.Song),  # because of "39" rofl
             "category": row.Category,
             "difficulty": row.Difficulty,
-            "level": row.Diff,
+            "level": str(row.Diff),
             "chartConstant": row.CC,
             "notes": row.Notes,
             "tap": row.Tap,
