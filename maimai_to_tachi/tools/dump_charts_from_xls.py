@@ -31,7 +31,7 @@ def main() -> None:
     for row in df_slice.itertuples():
         charts.append({
             "id": row.ID,
-            "song": row.Song,
+            "song": str(row.Song),  # because of "39" rofl
             "category": row.Category,
             "difficulty": row.Difficulty,
             "level": row.Diff,
