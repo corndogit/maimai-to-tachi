@@ -18,7 +18,7 @@ def get_joined_dataframes() -> pd.DataFrame:
     return pd.concat(frames)
 
 
-def write_to_file(charts: list, path: PathLike) -> None:
+def write_to_file(charts: dict[str, dict[str, Any]], path: PathLike) -> None:
     with open(path, 'w') as file:
         json.dump(charts, file)
 
