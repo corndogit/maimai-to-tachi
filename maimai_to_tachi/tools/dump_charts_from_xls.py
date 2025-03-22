@@ -27,9 +27,9 @@ def main() -> None:
     df: pd.DataFrame = get_joined_dataframes()
     df_slice = df[["ID", "Category", "Song", "Diff", "Difficulty",
                    "CC", "Notes", "Tap", "Hold", "Slide", "Break"]]
-    charts: list[dict[str, Any]] = []
+    charts: dict[str, dict[str, Any]] = {}
     for row in df_slice.itertuples():
-        charts.append({
+        charts[f"{row.ID}-{row.Difficulty}"] = {
             "id": row.ID,
             "song": str(row.Song),  # because of "39" rofl
             "category": row.Category,
@@ -41,7 +41,7 @@ def main() -> None:
             "hold": row.Hold,
             "slide": row.Slide,
             "break": row.Break
-        })
+        }
     write_to_file(charts, excel_path.parent / "chart_dump.json")
 
 
